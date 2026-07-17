@@ -17,7 +17,7 @@ public class AdminTaxController {
         this.taxService = taxService;
     }
 
-    // 🔹 Create tax
+    // Create tax
     @PostMapping
     public Tax createTax(
             @RequestParam Long userId,

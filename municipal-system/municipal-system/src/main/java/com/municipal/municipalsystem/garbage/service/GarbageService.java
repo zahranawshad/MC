@@ -79,7 +79,7 @@ public class GarbageService {
         return feeRepo.findAll();
     }
 
-    // 🔐 JWT BASED ACCESS
+    // JWT BASED ACCESS
     public List<GarbageFee> getMyFees(Authentication authentication) {
 
         String username = authentication.getName();

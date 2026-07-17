@@ -22,7 +22,9 @@ public class TaxService {
         this.taxPaymentRepository = taxPaymentRepository;
     }
 
-    // 🔹 Create and Assign Tax
+    // =========================
+    // CREATE TAX
+    // =========================
     public Tax createTax(Long userId, TaxType taxType, Double amount, LocalDate dueDate) {
 
         User user = userRepository.findById(userId)
@@ -34,48 +36,91 @@ public class TaxService {
         tax.setAmount(amount);
         tax.setDueDate(dueDate);
 
-        // penalty initially 0
         tax.setPenalty(0.0);
-
-        // total amount
         tax.setTotalAmount(amount);
-
         tax.setStatus(TaxStatus.PENDING);
 
         return taxRepository.save(tax);
     }
 
-    // 🔹 Get all taxes (Admin)
+    // =========================
+    // GET ALL TAXES (ADMIN)
+    // =========================
     public List<Tax> getAllTaxes() {
+
+        updatePenaltiesAndStatus();
+
         return taxRepository.findAll();
     }
 
-    // 🔹 Get taxes of a specific user
+    // =========================
+    // GET TAXES BY USER ID
+    // =========================
     public List<Tax> getTaxesByUser(Long userId) {
+
+        updatePenaltiesAndStatus();
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return taxRepository.findByUser(user);
     }
 
+    // =========================
+    // GET CURRENT USER TAXES
+    // =========================
+    public List<Tax> getCurrentUserTaxes(String username) {
+
+        updatePenaltiesAndStatus();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return taxRepository.findByUser(user);
+    }
+
+    // =========================
+    // UPDATE PENALTIES
+    // =========================
     public void updatePenaltiesAndStatus() {
+
         List<Tax> taxes = taxRepository.findAll();
 
         LocalDate today = LocalDate.now();
 
         for (Tax tax : taxes) {
-            if (tax.getStatus() == TaxStatus.PENDING && today.isAfter(tax.getDueDate())) {
-                double penalty = tax.getAmount() * 0.1; // 10% penalty
+
+            // Never modify paid taxes
+            if (tax.getStatus() == TaxStatus.PAID) {
+                continue;
+            }
+
+            if (today.isAfter(tax.getDueDate())) {
+
+                double penalty = tax.getAmount() * 0.10;
+
                 tax.setPenalty(penalty);
                 tax.setTotalAmount(tax.getAmount() + penalty);
                 tax.setStatus(TaxStatus.OVERDUE);
 
-                taxRepository.save(tax);
+            } else {
+
+                tax.setPenalty(0.0);
+                tax.setTotalAmount(tax.getAmount());
+                tax.setStatus(TaxStatus.PENDING);
+
             }
+
+            taxRepository.save(tax);
         }
     }
 
+    // =========================
+    // PAY TAX
+    // =========================
     public TaxPayment payTax(Long taxId, String paymentMethod) {
+
+        updatePenaltiesAndStatus();
 
         Tax tax = taxRepository.findById(taxId)
                 .orElseThrow(() -> new RuntimeException("Tax not found"));
@@ -92,14 +137,6 @@ public class TaxService {
         payment.setPaymentMethod(paymentMethod);
 
         return taxPaymentRepository.save(payment);
-    }
-
-    public List<Tax> getCurrentUserTaxes(String username) {
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        return taxRepository.findByUser(user);
     }
 
 }
