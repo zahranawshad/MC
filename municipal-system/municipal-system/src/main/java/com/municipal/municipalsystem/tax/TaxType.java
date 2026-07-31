@@ -6,3 +6,10 @@ public enum TaxType {
     TRADE_LICENSE,
     WASTE_MANAGEMENT
 }
+
+//taxRepository.findByStatus(TaxStatus.PAID);
+
+//findAllByOrderByAmountDesc()
+
+//taxRepository.findByUserArea("Puttalam Town");
+

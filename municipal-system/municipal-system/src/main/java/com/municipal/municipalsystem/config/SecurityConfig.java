@@ -58,3 +58,30 @@ public class SecurityConfig {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//taxRepository.findByStatus(TaxStatus.PAID);
+//taxRepository.findByTaxType(TaxType.PROPERTY);
+//findAllByOrderByAmountDesc()
+
+//taxRepository.findByUserArea("Puttalam Town");
+
+//Image logo = Image.getInstance("logo.png");
+//Image.getInstance("logo.png");
+//
+//logo.scaleToFit(60,60);
+//
+//document.add(logo);

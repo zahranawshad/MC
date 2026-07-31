@@ -1,5 +1,6 @@
 package com.municipal.municipalsystem.user;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.municipal.municipalsystem.user.User;
 import com.municipal.municipalsystem.user.Role;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,8 +35,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request) {
-        return userService.register(request);
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+
+        try {
+
+            return ResponseEntity.ok(userService.register(request));
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
     }
 
 

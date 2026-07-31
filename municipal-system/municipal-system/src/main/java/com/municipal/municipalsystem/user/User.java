@@ -33,6 +33,7 @@ public class User {
     // Business-only fields (nullable for citizens)
     private String businessName;
 
+    @Column(unique = true)
     private String businessLicenseNumber;
 
     private String businessCategory;

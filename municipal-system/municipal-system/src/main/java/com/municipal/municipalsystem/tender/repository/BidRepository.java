@@ -11,8 +11,11 @@ import com.municipal.municipalsystem.tender.entity.Tender;
 public interface BidRepository extends JpaRepository<Bid, Long> {
 
     List<Bid> findByTenderId(Long tenderId);
+
     List<Bid> findByTender(Tender tender);
 
     List<Bid> findByBusiness(User business);
+
+    long countByTender(Tender tender);
 
 }

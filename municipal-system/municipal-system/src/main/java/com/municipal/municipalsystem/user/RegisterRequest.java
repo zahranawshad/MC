@@ -1,9 +1,16 @@
 package com.municipal.municipalsystem.user;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public class RegisterRequest {
 
     private String username;
     private String email;
+    @NotBlank(message = "Password is required")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$",
+            message = "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character."
+    )
     private String password;
     private String role;   // CITIZEN or BUSINESS
 
@@ -12,12 +19,12 @@ public class RegisterRequest {
     private String address;
     private String area;
 
-    // Business-only fields
+    // Business only fields
     private String businessName;
     private String businessLicenseNumber;
     private String businessCategory;
 
-    // ===== GETTERS & SETTERS =====
+    // GETTERS & SETTERS
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
